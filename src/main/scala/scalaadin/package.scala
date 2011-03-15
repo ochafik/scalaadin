@@ -301,7 +301,7 @@ package object scalaadin {
     l
   }
   def newVerticalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
-    val l = new SplitPanel
+    val l = new VerticalSplitPanel
     l.addComponent(a)
     l.addComponent(b)
     a.setSizeFull
@@ -310,9 +310,16 @@ package object scalaadin {
     l
   }
   def newHorizontalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
-    val l = newVerticalSplitPanel(a, b, ratio)
-    l.setOrientation(SplitPanel.ORIENTATION_HORIZONTAL)
+    val l = new HorizontalSplitPanel
+    l.addComponent(a)
+    l.addComponent(b)
+    a.setSizeFull
+    b.setSizeFull
+    l.setSplitPosition((ratio * 100).toInt) // percent
     l
+    /*val l = newVerticalSplitPanel(a, b, ratio)
+    l.setOrientation(SplitPanel.ORIENTATION_HORIZONTAL)
+    l*/
   }
   
   def newLink(url: URL, caption: String = null) =
