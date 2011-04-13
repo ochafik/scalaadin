@@ -132,6 +132,20 @@ extends VerticalLayout
     updateColumnsOrder
   }
   
+  private var actualFooterData: T = _
+  def footerData = actualFooterData
+  def footerData_=(v: T) = {
+    if (v == null) {
+      table.setFooterVisible(false)
+    } else {
+      table.setFooterVisible(true)
+      val bi = new BeanItem[T](v)
+      for ((fieldName, tableColumn) <- fieldInfos.filter(_._2.hasFooter)) {
+        table.setColumnFooter(fieldName, Option(bi.getItemProperty(fieldName).getValue).map(_.toString).orNull)
+      }
+    }
+  }
+  /*
   val footerData = Var[T]() listen (v => {
     if (v == null) {
       table.setFooterVisible(false)
@@ -142,7 +156,7 @@ extends VerticalLayout
         table.setColumnFooter(fieldName, Option(bi.getItemProperty(fieldName).getValue).map(_.toString).orNull)
       }
     }
-  })
+  })*/
   
   private var renameTab = false
   def withTabRenaming = {
@@ -220,7 +234,7 @@ case class RichTable(table: Table) {
     else
       table.setContainerDataSource(new BeanItemContainer(col))
   }
-  def hideCols(names: String*) = {
+  private[scalaadin] def hideCols(names: String*) = {
     table.setColumnCollapsingAllowed(true);
     if (table.getContainerDataSource != null)
       for (name <- names)

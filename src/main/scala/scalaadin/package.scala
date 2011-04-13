@@ -15,7 +15,7 @@ import com.vaadin.addon.treetable._
 import scala.reflect._
 import java.net.URL
 
-//import supplix.vaadin._
+//import scalaadin._
 
 package scalaadin {
   case class CompWithRatio(component: Component, ratio: Option[Float], alignment: Option[Alignment])
@@ -82,6 +82,20 @@ package object scalaadin {
   }
   
   implicit def TextFieldExtensions(f: TextField) = new {
+    def value = Option(f.getValue).map(_.asInstanceOf[String]).getOrElse("")
+    def valueOption = {
+      val v = value
+      if (v.trim == "")
+        None
+      else
+        Some(v)
+    }
+    def value_=(v: Option[String]): Unit = {
+      f.setValue(v.getOrElse(""))
+    }
+    def value_=(v: String): Unit = {
+      f.setValue(v)
+    }
     def withSecret = {
       f.setSecret(true)
       f
@@ -300,8 +314,25 @@ package object scalaadin {
     add(l, components:_*)
     l
   }
+  /*
+  def newVerticalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
+    val l = new SplitPanel
+    l.addComponent(a)
+    l.addComponent(b)
+    a.setSizeFull
+    b.setSizeFull
+    l.setSplitPosition((ratio * 100).toInt) // percent
+    l
+  }
+  def newHorizontalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
+    val l = newVerticalSplitPanel(a, b, ratio)
+    l.setOrientation(SplitPanel.ORIENTATION_HORIZONTAL)
+    l
+  }*/
   def newVerticalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
     val l = new VerticalSplitPanel
+    //l.setWidth("100px")
+    //l.setHeight("100px")
     l.addComponent(a)
     l.addComponent(b)
     a.setSizeFull
@@ -311,6 +342,8 @@ package object scalaadin {
   }
   def newHorizontalSplitPanel(a: Component, b: Component, ratio: Double = 0.5) = {
     val l = new HorizontalSplitPanel
+    //l.setWidth("100px")
+    //l.setHeight("100px")
     l.addComponent(a)
     l.addComponent(b)
     a.setSizeFull
@@ -430,11 +463,35 @@ package object scalaadin {
     f.setItemDataSource(item)
     f
   }
+  def newChartExample = {
+      
+    val ac = new vaadinvisualizations.AreaChart();
+    ac.setOption("legend", "bottom");
+        
+    ac.addXAxisLabel("Year")
+    ac.addArea("Expenses")
+    ac.addArea("Sales")
+    ac.add("2004", Array(100.0, 200.0))
+    ac.add("2005", Array(75, 100.0))
+    ac.add("2006", Array(32, 234.0))
+    ac.add("2007", Array(25, 2534.0))
+    ac.add("2008", Array(2343, 12.0))
+    ac.add("2014", Array(100.0, 200.0))
+    ac.add("2015", Array(75, 100.0))
+    ac.add("2016", Array(32, 234.0))
+    ac.add("2017", Array(25, 2534.0))
+    ac.add("2018", Array(2343, 12.0))
+    ac.setWidth("800px")//400px")
+    ac.setHeight("400px")
+   
+    ac
+  }
   
   def newLazyTabSheet(tabs: (String, () => Component)*) = {
     val t = new LazyTabSheet
     for ((title, compCreator) <- tabs.filter(_ != null))
       t.addLazyTab(title, compCreator())
+      //t.addLazyTab(title, SupplixMonitor.monitor("Creating tab '" + title + "'") { compCreator() })
     t
   }
 }
