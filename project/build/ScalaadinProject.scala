@@ -31,6 +31,10 @@ extends DefaultProject(info)
           from "jar:http://gwt-google-apis.googlecode.com/files/gwt-maps-1.1.0.zip!/gwt-maps-1.1.0/gwt-maps.jar",
       
       "com.vaadin" % "vaadin" % vaadinVersion % "compile->default",
+      
+      "com.vaadin.addon" % "beanvalidation-addon" % "0.6.1",
+      "org.hibernate" % "hibernate-validator" % "4.2.0.Beta2",
+      
       //"org.vaadin.addons" % "confirmdialog" % "1.0.1",
       "org.vaadin.addons" % "visualizationsforvaadin" % "1.1.1",
       "org.vaadin.addons" % "vaadin-sqlcontainer" % "0.8",
