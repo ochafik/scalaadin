@@ -11,6 +11,7 @@ import com.vaadin.data.Property.ValueChangeEvent
 import com.vaadin.ui._
 import org.vaadin._
 import com.vaadin.addon.treetable._
+import com.vaadin.ui.themes.BaseTheme
     
 import scala.reflect._
 import java.net.URL
@@ -64,6 +65,71 @@ package scalaadin {
 }
 package object scalaadin {  
 
+  implicit def FormMethods[F <: Form](form: F) = new {
+    def showNullValuesAsEmptyStrings: F = {
+      form.setFormFieldFactory(new DefaultFieldFactory() {
+        override def createField(item: Item, propertyId: Object, uiContext: Component) = {
+          val field = super.createField(item, propertyId, uiContext)
+          if (field.isInstanceOf[TextField]) {
+            field.asInstanceOf[TextField].setNullRepresentation("")
+          }
+          field;
+        }
+      })
+      form
+    }
+  }
+  
+  trait Hidable { def hide: Unit }
+  def modalWindow(title: String, parent: Component, build: (Window with Hidable) => Unit): Unit = {
+    val subwindow = new Window("Planning Session") with Hidable {
+      override def hide: Unit = { 
+        getParent.removeWindow(this)
+      }
+    }
+    subwindow.setModal(true);
+    build(subwindow)
+    (if (parent.isInstanceOf[Window]) parent.asInstanceOf[Window] else parent.getWindow).addWindow(subwindow)
+  }
+  def modalForm[D <: AnyRef](title: String, parent: Component, editor: DataForm[D], data: D, width: String = "400px"): Option[D] = {
+    var resultData: Option[D] = None
+    modalWindow(title, parent, subwindow => {
+      //editor.setCaption("Planning Session Settings")
+      editor.data = data
+      
+      val layout = subwindow.getContent.asInstanceOf[VerticalLayout]
+      layout.setMargin(true)
+      layout.setSpacing(true)
+      
+      val toolbar = newHorizontal(
+        newButton("Ok") {
+          try {
+            editor.validate
+            resultData = Some(data)
+            subwindow.hide
+          } catch {
+            case ex =>
+              ex.printStackTrace
+          }
+        },
+        (newButton("Cancel") { subwindow.hide } withLinkStyle, Alignment.MIDDLE_CENTER)
+      )
+      
+      //layout.addComponent(editor)
+      add(layout, (editor.fillSize, 1f))
+      //layout.setComponentAlignment(editor, Alignment.MIDDLE_CENTER)
+      
+      editor.getFooter.addComponent(toolbar)
+      editor.getFooter.setMargin(false, false, true, true)
+
+      if (width != null)
+        subwindow.setWidth(width)//"400px")
+    
+    })
+    
+    resultData
+  }
+ 
   def wrapper(c: => Component) = {
     val w = new Wrapper[Component]
     w() = c
@@ -269,6 +335,11 @@ package object scalaadin {
     }
     def withPrimaryStyle = {
       b.withStyle("primary")
+      b
+    }
+    
+    def withLinkStyle = {
+      b.setStyleName(BaseTheme.BUTTON_LINK)
       b
     }
     def withClickShortcut(keyCode: Int, modifiers: Int*) = {

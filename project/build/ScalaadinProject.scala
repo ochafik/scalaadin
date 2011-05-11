@@ -7,6 +7,7 @@ extends DefaultProject(info)
   // override def scanDirectories = Nil
 
   val javaNet = "java.net" at "http://download.java.net/maven/2/"
+  val jbossRepo = "jboss.org" at "https://repository.jboss.org/nexus/content/groups/public-jboss/"
   val vaadinSnapshots = "vaadin-snapshots" at "http://oss.sonatype.org/content/repositories/vaadin-snapshots/"
   val vaadinReleases = "vaadin-releases" at "http://oss.sonatype.org/content/repositories/vaadin-releases/"
   val vaadinAddons = "vaadin-addons" at "http://maven.vaadin.com/vaadin-addons"
