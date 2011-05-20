@@ -116,10 +116,13 @@ package object scalaadin {
       )
       
       //layout.addComponent(editor)
-      add(layout, (editor.fillSize, 1f))
+      add(layout, 
+        (editor.fillSize, 1f, Alignment.MIDDLE_CENTER),
+        (toolbar, Alignment.MIDDLE_CENTER)  
+      )
       //layout.setComponentAlignment(editor, Alignment.MIDDLE_CENTER)
       
-      editor.getFooter.addComponent(toolbar)
+      //editor.getFooter.addComponent(toolbar)
       editor.getFooter.setMargin(false, false, true, true)
 
       if (width != null)
